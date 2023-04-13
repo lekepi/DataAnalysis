@@ -3,11 +3,11 @@ import pandas as pd
 from models import engine, session, Factor, FactorDriver, FactorPerf
 from utils import task_checker_db
 
+
 def get_factor_driver(my_date):
 
     # delete FactorDriver where entry_date = my_date
     session.query(FactorDriver).filter(FactorDriver.entry_date == my_date).delete()
-    session.query(FactorPerf).filter(FactorPerf.entry_date == my_date).delete()
     session.commit()
 
     region = ['AMER', 'EMEA']
@@ -20,6 +20,7 @@ def get_factor_driver(my_date):
 
     error_list = []
     factor_driver_list = []
+    factor_perf_list = []
 
     for r in region:
         for s in side:
@@ -32,7 +33,7 @@ def get_factor_driver(my_date):
                 df_factor = df[df['Name'] == factor_name]
                 # if df is null add to error_list
                 if df_factor.empty:
-                    error_list.append(f'{r} {s}: {factor_name} missing.')
+                    error_list.append(f"{r} {s}: '{factor_name}' missing.")
                 else:
                     # get the quintile values
                     quintile1 = df_factor['Low'].values[0]
@@ -57,35 +58,62 @@ def get_factor_driver(my_date):
                     factor_driver_list.append(new_factor_driver)
 
     # update factor_perf table
-    factor_perf_list = []
+
+    # find last entry_date in factor_perf table
+    last_entry_date_list = session.query(FactorPerf.entry_date).order_by(FactorPerf.entry_date.desc()).first()
+    if last_entry_date_list:
+        last_entry_date = last_entry_date_list[0]
+        # find the FactorPerf for that date
+        last_factor_perf_list = session.query(FactorPerf).filter(FactorPerf.entry_date == last_entry_date).all()
+    else:
+        last_entry_date = None
+
     for r in region:
-        df = pd.read_excel(filename, sheet_name=f'Perf {r}', header=3)
+        df = pd.read_excel(filename, sheet_name=f'Perf {r}', parse_dates=['Date'])
+        # convert the 'Date' column to date
+        df['Date'] = pd.to_datetime(df['Date']).dt.date
+        #filter with entry_date>=last_entry_date
+        if last_entry_date:
+            df = df[df['Date'] >= last_entry_date]
+        # sort by Date
+        df = df.sort_values(by='Date')
+        # reset index
+        df = df.reset_index(drop=True)
+
+        # remove ' Long-Short (High-Low) Total Return' from the dataframe column name
+        df.columns = df.columns.str.replace(' Long-Short \(High-Low\) Total Return', '')
+        df.columns = df.columns.str.replace('FTW SPX Index ', '')
+        df.columns = df.columns.str.replace('FTW SXXP Index ', '')
+
         for factor in factor_list:
             factor_name = factor.name
-            # rename the second column of the dataframe to 'Name'
-            df.rename(columns={df.columns[1]: 'Name'}, inplace=True)
-
-            # filter the row in the dataframe where Name = factor_name
-            df_factor = df[df['Name'] == factor_name]
-            # if df is null add to error_list
-            if df_factor.empty:
+            # loop through the dataframe and add a record in FactorPerf table
+            # check if column factor_name exists in dataframe
+            if factor_name not in df.columns:
                 error_list.append(f'{r}: {factor_name} Perf missing.')
             else:
-                # get the quintile values
-                perf_1w = df_factor['Prior Wk'].values[0]
-                perf_1m = df_factor['1Mo'].values[0]
-                perf_3m = df_factor['3Mo'].values[0]
-                perf_6m = df_factor['6Mo'].values[0]
-
-                # Add record in FactorPerf table
-                new_factor_perf = FactorPerf(entry_date=my_date,
-                                             region=r,
-                                             factor_id=factor.id,
-                                             perf_1w=perf_1w,
-                                             perf_1m=perf_1m,
-                                             perf_3m=perf_3m,
-                                             perf_6m=perf_6m)
-                factor_perf_list.append(new_factor_perf)
+                # from df, get the value for factor_name column for Date=last_entry_date and compare
+                is_ok = True
+                if last_entry_date:
+                    last_perf = df[df['Date'] == last_entry_date][factor_name].values[0]
+                    # find the FactorPerf from last_factor_perf_list where factor_id=factor.id and region=r
+                    last_factor_perf = [x for x in last_factor_perf_list if x.factor_id == factor.id and x.region == r][0]
+                    if last_perf != last_factor_perf.perf:
+                        error_list.append(f'{r}: {factor_name} Perf not equal to last entry.')
+                        is_ok = False  # dont loop in the dataframe
+                if is_ok:
+                    # loop the dataframe from second row
+                    for index, row in df.iterrows():
+                        if index > 0:  # skip the first row
+                            # get the date and perf value
+                            perf_date = row['Date']
+                            perf_value = row[factor_name]
+                            # Add record in FactorPerf table
+                            new_factor_perf = FactorPerf(entry_date=perf_date,
+                                                         region=r,
+                                                         factor_id=factor.id,
+                                                         perf=perf_value)
+                            factor_perf_list.append(new_factor_perf)
 
     if error_list:
         print('Error List:')
@@ -102,7 +130,7 @@ def get_factor_driver(my_date):
 
 
 if __name__ == '__main__':
-    my_date = date(2023, 3, 9)
-    # my_date = date.today()
 
+    # my_date = date(2023, 3, 27)
+    my_date = date.today()
     get_factor_driver(my_date)

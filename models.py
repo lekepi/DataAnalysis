@@ -387,10 +387,7 @@ class FactorPerf(Base):
     factor_id = Column(ForeignKey("factor.id"), nullable=False)
     factor = relationship("Factor")
     region = Column(String(length=10))
-    perf_1w = Column(Float)
-    perf_1m = Column(Float)
-    perf_3m = Column(Float)
-    perf_6m = Column(Float)
+    perf = Column(Float)
 
 
 def copy_trade(trade):
