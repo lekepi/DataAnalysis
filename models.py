@@ -20,6 +20,13 @@ Session.configure(bind=engine)
 session = Session()
 
 
+class Aum(Base):
+    __tablename__ = 'aum'
+    id = Column(Integer, primary_key=True)
+    entry_date = Column(Date)
+    amount = Column(Float)
+
+
 class Trade(Base):
     __tablename__ = 'trade'
     id = Column(Integer, primary_key=True)

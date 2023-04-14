@@ -1,6 +1,6 @@
 import pandas as pd
 from openpyxl import Workbook, load_workbook
-from utils import get_df_des,append_excel
+from utils import get_df_des, append_excel
 
 
 if __name__ == '__main__':
