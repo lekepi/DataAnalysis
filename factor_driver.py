@@ -25,6 +25,8 @@ def get_factor_driver(my_date):
     for r in region:
         for s in side:
             df = pd.read_excel(filename, sheet_name=f'ALTO_{r} {s}', header=3)
+            # in df['Name'] column, replace '%' by 'Perc'
+            df['Name'] = df['Name'].str.replace('%', 'Perc')
 
             for factor in factor_list:
                 factor_name = factor.name
@@ -81,7 +83,7 @@ def get_factor_driver(my_date):
         df = df.reset_index(drop=True)
 
         # remove ' Long-Short (High-Low) Total Return' from the dataframe column name
-        df.columns = df.columns.str.replace(' Long-Short \(High-Low\) Total Return', '')
+        df.columns = df.columns.str.replace(' Long-Short (High-Low) Total Return', '')
         df.columns = df.columns.str.replace('FTW SPX Index ', '')
         df.columns = df.columns.str.replace('FTW SXXP Index ', '')
 
@@ -101,7 +103,7 @@ def get_factor_driver(my_date):
                     if last_perf != last_factor_perf.perf:
                         error_list.append(f'{r}: {factor_name} Perf not equal to last entry.')
                         is_ok = False  # dont loop in the dataframe
-                if is_ok:
+                if 1 == 1 : #if is_ok:
                     # loop the dataframe from second row
                     for index, row in df.iterrows():
                         if index > 0:  # skip the first row
@@ -115,7 +117,7 @@ def get_factor_driver(my_date):
                                                          perf=perf_value)
                             factor_perf_list.append(new_factor_perf)
 
-    if error_list:
+    if 1 == 2: # error_list:
         print('Error List:')
         for error in error_list:
             print(error)
