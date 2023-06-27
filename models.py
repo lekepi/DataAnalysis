@@ -69,6 +69,15 @@ class Trade(Base):
                f" {self.side} {int(self.quantity)} {self.ticker}"
 
 
+class TradePnl(Base):
+    __tablename__ = 'trade_pnl'
+    id = Column(Integer, primary_key=True)
+    start_date = Column(Date, nullable=False)
+    end_date = Column(Date, nullable=False)
+    period = Column(String(length=10), nullable=False)
+    pnl = Column(Float)
+
+
 class Allocation(Base):
     __tablename__ = 'allocation'
     id = Column(Integer, primary_key=True)
