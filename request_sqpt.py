@@ -10,7 +10,7 @@ from models import engine, session, Aum
 def get_start_month_weekday_list():
 
     start_date = date(2020, 4, 1)
-    date_list = [start_date ]
+    date_list = [start_date]
     final_day = date(2023, 4, 3)
 
     while start_date < final_day:
@@ -55,8 +55,6 @@ def get_start_month_position():
     df['Symbol'] = df['Symbol'].replace('SXO1 EUX', 'SXO1 Index')
     # replace symbol 'ES1 CME' with 'ES1 Index'
     df['Symbol'] = df['Symbol'].replace('ES1 CME', 'ES1 Index')
-
-    print(1)
 
 
 if __name__ == '__main__':
