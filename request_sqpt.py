@@ -43,7 +43,8 @@ def get_start_month_position():
                 order by entry_date,mkt_value_usd desc;"""
     df = pd.read_sql(my_sql, con=engine)
 
-    my_sql = """SELECT entry_date as Date,amount*1000000 as nav_usd FROM aum WHERE entry_date>='2020-03-01' and entry_date<'2023-05-01';"""
+    my_sql = """SELECT entry_date as Date,amount*1000000 as nav_usd FROM aum WHERE type='leveraged' and 
+                entry_date>='2020-03-01' and entry_date<'2023-05-01';"""
     df_aum = pd.read_sql(my_sql, con=engine)
     # merge on entry_date
     df = pd.merge(df, df_aum, how='left', left_on='Date', right_on='Date')

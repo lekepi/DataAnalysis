@@ -80,7 +80,7 @@ def get_daily_perf():
     # convert index into column
 
     # add deployed column
-    my_sql = "Select entry_date,deployed from aum where entry_date>='2019-04-01' order by entry_date"
+    my_sql = "Select entry_date,deployed from aum where entry_date>='2019-04-01' and type='leveraged' order by entry_date"
     df_deployed = pd.read_sql(my_sql, con=engine, parse_dates=['entry_date'])
     df_deployed['entry_date'] = df_deployed['entry_date'].dt.date
     # add the column YearMonth

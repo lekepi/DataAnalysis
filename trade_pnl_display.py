@@ -6,7 +6,7 @@ if __name__ == '__main__':
     my_sql = "select start_date,end_date,pnl from trade_pnl"
     df = pd.read_sql(my_sql, con=engine)
 
-    my_sql = "select entry_date as start_date,amount*100/deployed as aum from aum where entry_date>='2019-04-01'"
+    my_sql = "select entry_date as start_date,amount*100/deployed as aum from aum where entry_date>='2019-04-01' and type='leveraged'"
     df_aum = pd.read_sql(my_sql, con=engine)
 
     # left join

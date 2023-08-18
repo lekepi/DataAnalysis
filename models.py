@@ -25,6 +25,7 @@ class Aum(Base):
     id = Column(Integer, primary_key=True)
     entry_date = Column(Date)
     amount = Column(Float)
+    type = Column(String(45))
 
 
 class Trade(Base):
