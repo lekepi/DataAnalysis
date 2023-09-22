@@ -14,11 +14,11 @@ def get_drop():
     df_cluster = pd.read_sql(my_sql, con=engine)
 
     # index return
-    my_sql = f"""SELECT entry_date,adj_price as price FROM anandaprod.product_market_data WHERE product_id=437
+    my_sql = f"""SELECT entry_date,adj_price as price FROM product_market_data WHERE product_id=437
                         and entry_date>='2019-01-01'"""
     df_spx = pd.read_sql(my_sql, con=engine, parse_dates=['entry_date'], index_col='entry_date')
 
-    my_sql = f"""SELECT entry_date,adj_price as price FROM anandaprod.product_market_data WHERE product_id=439
+    my_sql = f"""SELECT entry_date,adj_price as price FROM product_market_data WHERE product_id=439
                         and entry_date>='2019-01-01'"""
     df_sxxp = pd.read_sql(my_sql, con=engine, parse_dates=['entry_date'], index_col='entry_date')
 

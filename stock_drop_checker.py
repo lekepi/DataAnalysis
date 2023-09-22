@@ -21,8 +21,8 @@ def get_drop_stock(my_date, perc):
     df_index = pd.read_sql(my_sql, con=engine)
 
     # get SPX and SXXP return from df_index
-    spx_return_1d = df_index[df_index['ticker'] == 'SPX Index']['perf_1d'].values[0]
-    sxxp_return_1d = df_index[df_index['ticker'] == 'SXXP Index']['perf_1d'].values[0]
+    spx_return_1d = df_index[df_index['ticker'] == 'SPTR500N Index']['perf_1d'].values[0]
+    sxxp_return_1d = df_index[df_index['ticker'] == 'SXXR Index']['perf_1d'].values[0]
 
     for index, row in df.iterrows():
         prod_type = row['prod_type']

@@ -291,6 +291,29 @@ class Currency(Base):
         return f"<Currency(name='{self.name}', code='{self.code}', symbol='{self.symbol}')>"
 
 
+class ProductAction(Base):
+    __tablename__ = 'product_action'
+    id = Column(Integer, primary_key=True)
+    product_id = Column(ForeignKey("product.id"))
+    product = relationship("Product")
+    entry_date = Column(Date)
+    action_type = Column(String(45))
+    amount = Column(Float)
+    currency = Column(String(3))
+    comment = Column(String(150))
+
+
+class ProductMarketData(Base):
+    __tablename__ = 'product_market_data'
+    id = Column(Integer, primary_key=True)
+    product_id = Column(ForeignKey("product.id"))
+    product = relationship("Product")
+    entry_date = Column(Date)
+    price = Column(Float)
+    adj_price = Column(Float)
+    volume = Column(Float)
+
+
 class PositionPb(Base):
     __tablename__ = 'position_pb'
     id = Column(Integer, primary_key=True)
@@ -328,6 +351,29 @@ class ProductBeta(Base):
     beta = Column(Float)
     alpha = Column(Float)
     return_1d = Column(Float)
+
+
+class AlphaSummary(Base):
+    __tablename__ = 'alpha_summary'
+    id = Column(Integer, primary_key=True)
+    entry_date = Column(Date)
+    parent_fund_id = Column(ForeignKey("parent_fund.id"))
+    parent_fund = relationship("ParentFund")
+    long_usd = Column(Float)
+    short_usd = Column(Float)
+    long_amer_usd = Column(Float)
+    long_emea_usd = Column(Float)
+    alpha_bp = Column(Float)
+    alpha_amer_bp = Column(Float)
+    alpha_emea_bp = Column(Float)
+    alpha_long_bp = Column(Float)
+    alpha_short_bp = Column(Float)
+    alpha_universe = Column(Float)
+    alpha_universe_m = Column(Float)
+    alpha_universe_y = Column(Float)
+    alpha_universe_0 = Column(Float)
+    alpha_universe_m_0 = Column(Float)
+    alpha_universe_y_0 = Column(Float)
 
 
 class Position(Base):
