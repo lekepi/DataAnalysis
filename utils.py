@@ -1,5 +1,7 @@
 from datetime import timedelta
-from models import session, TaskChecker
+from models import session, TaskChecker, config_class
+from email.message import EmailMessage
+import smtplib
 
 
 def task_checker_db(status, task_details, comment='', task_name='Get EMSX Trade', task_type='Task Scheduler ', only_new=False):
@@ -29,6 +31,24 @@ def task_checker_db(status, task_details, comment='', task_name='Get EMSX Trade'
         session.query(TaskChecker).filter(TaskChecker.task_details == task_details) \
             .filter(TaskChecker.status == 'Fail').filter(TaskChecker.active == 1).delete()
         session.commit()
+
+
+def simple_email(subject, body, ml, html=None):
+
+    mail = config_class.MAIL_USERNAME
+    password = config_class.MAIL_PASSWORD
+
+    msg = EmailMessage()
+    msg['subject'] = subject
+    msg['From'] = 'ananda.am.system@gmail.com'
+    msg['To'] = ml  # multiple email: 'olivier@ananda-am.com, lekepi@gmail.com'
+    msg.set_content(body)
+    if html:
+        msg.add_alternative(html, subtype='html')
+
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        smtp.login(mail, password)
+        smtp.send_message(msg)
 
 
 def clean_df_value(serie):

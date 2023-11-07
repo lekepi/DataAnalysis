@@ -342,6 +342,19 @@ class PositionPb(Base):
     fx_rate = Column(Float)
 
 
+class PositionBacktest(Base):
+    __tablename__ = 'position_backtest'
+    id = Column(Integer, primary_key=True)
+    entry_date = Column(Date, nullable=False)
+    product_id = Column(ForeignKey("product.id"))
+    product = relationship("Product")
+    notional_usd = Column(Float)
+    pnl_usd = Column(Float)
+    alpha_usd = Column(Float)
+    alpha_1d = Column(Float)
+    return_1d = Column(Float)
+    type = Column(String(length=45))
+
 class ProductBeta(Base):
     __tablename__ = 'product_beta'
     id = Column(Integer, primary_key=True)
@@ -453,6 +466,19 @@ class FactorPerf(Base):
     perf = Column(Float)
 
 
+class NavAccountStatement(Base):
+    __tablename__ = 'nav_account_statement'
+    id = Column(Integer, primary_key=True)
+    entry_date = Column(Date, nullable=False)
+    data_name = Column(String(length=45))
+    data_daily = Column(Float)
+    data_mtd = Column(Float)
+    data_qtd = Column(Float)
+    data_ytd = Column(Float)
+    active = Column(Boolean, default=1)
+    status = Column(String(length=45), default='Daily')
+
+
 def copy_trade(trade):
     amended_trade = Trade(
         order_number=trade.order_number,
@@ -480,4 +506,5 @@ def copy_trade(trade):
         parent_broker_id=trade.parent_broker_id,
     )
     return amended_trade
+
 

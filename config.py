@@ -31,8 +31,10 @@ class ConfigDefault:
         MAIL_SERVER = 'smtp.googlemail.com'
         MAIL_PORT = '587'
         MAIL_USE_TLS = True
-        MAIL_USERNAME = config['EMAIL']['EMAIL_USER']
-        MAIL_PASSWORD = config['EMAIL']['EMAIL_PASS']
+        MAIL_USERNAME_ENCRYPTED = config['EMAIL']['EMAIL_USER']
+        MAIL_PASSWORD_ENCRYPTED = config['EMAIL']['EMAIL_PASS']
+        MAIL_USERNAME = cryptocode.decrypt(MAIL_USERNAME_ENCRYPTED, SECRET_KEY)
+        MAIL_PASSWORD = cryptocode.decrypt(MAIL_PASSWORD_ENCRYPTED, SECRET_KEY)
         TRADE_FILE_PATH = config['PATH']['TRADE_FILE_PATH']
     elif DEFAULT_CONFIG == 'ConfigUAT':
         SECRET_KEY = config['SECRET_KEY']['CODE']
