@@ -31,7 +31,6 @@ if __name__ =='__main__':
 
     df_large_alpha['large_alpha_perc'] = df_large_alpha['large_alpha_usd']/df_large_alpha['large_notional_usd']
 
-
     # get the list of id of small cap
     df_small = df.loc[df['mkt_cap_size']=='Small', 'product_id'].tolist()
     # create a string separeted by comma:
@@ -58,7 +57,7 @@ if __name__ =='__main__':
     # outer join the two dataframes
     df_alpha = df_large_alpha.join(df_small_alpha, how='outer')
 
-    #remove last row
+    # remove last row
     df_alpha = df_alpha.iloc[:-1]
 
     # fill 'small_alpha_perc' and 'large_alpha_perc' with 0 when none

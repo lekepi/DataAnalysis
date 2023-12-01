@@ -429,6 +429,14 @@ class TradingGs(Base):
     arrival = Column(Float)
 
 
+class ProductGroup(Base):
+    __tablename__ = 'product_group'
+    id = Column(Integer, primary_key=True)
+    group_name = Column(String(45))
+    product_id = Column(ForeignKey('product.id'))
+    product = relationship("Product")
+
+
 class Factor(Base):
     __tablename__ = 'factor'
     id = Column(Integer, primary_key=True)

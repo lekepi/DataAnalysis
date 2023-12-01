@@ -1,5 +1,6 @@
 from datetime import timedelta
-from models import session, TaskChecker, config_class
+from models import session, TaskChecker, config_class, engine
+from datetime import date
 from email.message import EmailMessage
 import smtplib
 
@@ -31,6 +32,20 @@ def task_checker_db(status, task_details, comment='', task_name='Get EMSX Trade'
         session.query(TaskChecker).filter(TaskChecker.task_details == task_details) \
             .filter(TaskChecker.status == 'Fail').filter(TaskChecker.active == 1).delete()
         session.commit()
+
+
+def last_alpha_date():
+    today = date.today()
+    if today.weekday() == 0:
+        end_date = today - timedelta(days=3)
+    else:
+        end_date = today - timedelta(days=1)
+    with engine.connect() as con:
+        rs = con.execute("SELECT max(entry_date) FROM position WHERE alpha_usd is not NULL;")
+        for row in rs:
+            max_date = row[0]
+        end_date = min(max_date, end_date)
+    return end_date
 
 
 def simple_email(subject, body, ml, html=None):
