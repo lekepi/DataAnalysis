@@ -6,7 +6,7 @@ if __name__ =='__main__':
     df = pd.read_sql(my_sql, con=engine)
 
     # if market_cap>3B, then large cap else small Cap
-    df['mkt_cap_size'] = df['market_cap'].apply(lambda x: 'Large' if x>3000 else 'Small')
+    df['mkt_cap_size'] = df['market_cap'].apply(lambda x: 'Large' if x > 3000 else 'Small')
 
     # get the list of id of large cap
     df_large = df.loc[df['mkt_cap_size'] == 'Large', 'product_id'].tolist()
