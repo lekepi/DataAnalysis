@@ -5,7 +5,7 @@ from utils import task_checker_db
 
 
 def get_factor_driver(my_date):
-
+    session.query(FactorPerf).delete()
     # delete FactorDriver where entry_date = my_date
     session.query(FactorDriver).filter(FactorDriver.entry_date == my_date).delete()
     session.commit()
@@ -59,24 +59,10 @@ def get_factor_driver(my_date):
                                                      strength=strength)
                     factor_driver_list.append(new_factor_driver)
 
-    # update factor_perf table
-
-    # find last entry_date in factor_perf table
-    last_entry_date_list = session.query(FactorPerf.entry_date).order_by(FactorPerf.entry_date.desc()).first()
-    if last_entry_date_list:
-        last_entry_date = last_entry_date_list[0]
-        # find the FactorPerf for that date
-        last_factor_perf_list = session.query(FactorPerf).filter(FactorPerf.entry_date == last_entry_date).all()
-    else:
-        last_entry_date = None
-
     for r in region:
         df = pd.read_excel(filename, sheet_name=f'Perf {r}', parse_dates=['Date'])
         # convert the 'Date' column to date
         df['Date'] = pd.to_datetime(df['Date']).dt.date
-        #filter with entry_date>=last_entry_date
-        if last_entry_date:
-            df = df[df['Date'] >= last_entry_date]
         # sort by Date
         df = df.sort_values(by='Date')
         # reset index
@@ -95,40 +81,27 @@ def get_factor_driver(my_date):
                 error_list.append(f'{r}: {factor_name} Perf missing.')
             else:
                 # from df, get the value for factor_name column for Date=last_entry_date and compare
-                is_ok = True
-                if last_entry_date:
-                    last_perf = df[df['Date'] == last_entry_date][factor_name].values[0]
-                    # find the FactorPerf from last_factor_perf_list where factor_id=factor.id and region=r
-                    last_factor_perf = [x for x in last_factor_perf_list if x.factor_id == factor.id and x.region == r][0]
-                    if last_perf != last_factor_perf.perf:
-                        error_list.append(f'{r}: {factor_name} Perf not equal to last entry.')
-                        is_ok = False  # dont loop in the dataframe
-                if 1 == 1 : #if is_ok:
-                    # loop the dataframe from second row
-                    for index, row in df.iterrows():
-                        if index > 0:  # skip the first row
-                            # get the date and perf value
-                            perf_date = row['Date']
-                            perf_value = row[factor_name]
-                            # Add record in FactorPerf table
-                            new_factor_perf = FactorPerf(entry_date=perf_date,
-                                                         region=r,
-                                                         factor_id=factor.id,
-                                                         perf=perf_value)
-                            factor_perf_list.append(new_factor_perf)
 
-    if 1 == 2: # error_list:
-        print('Error List:')
-        for error in error_list:
-            print(error)
-    else:
-        session.add_all(factor_driver_list)
-        session.add_all(factor_perf_list)
-        session.commit()
-        print('Factor Driver updated successfully.')
-        task_checker_db(status='Success', task_details=f'Factor Driver - {my_date}',
-                        comment=f"Factor Driver updated successfully.",
-                        task_name='Factor Driver', task_type='DataAnalysis')
+                for index, row in df.iterrows():
+                    if index > 0:  # skip the first row
+                        # get the date and perf value
+                        perf_date = row['Date']
+                        perf_value = row[factor_name]
+                        # Add record in FactorPerf table
+                        new_factor_perf = FactorPerf(entry_date=perf_date,
+                                                        region=r,
+                                                        factor_id=factor.id,
+                                                        perf=perf_value)
+                        factor_perf_list.append(new_factor_perf)
+
+
+    session.add_all(factor_driver_list)
+    session.add_all(factor_perf_list)
+    session.commit()
+    print('Factor Driver updated successfully.')
+    task_checker_db(status='Success', task_details=f'Factor Driver - {my_date}',
+                    comment=f"Factor Driver updated successfully.",
+                    task_name='Factor Driver', task_type='DataAnalysis')
 
 
 if __name__ == '__main__':

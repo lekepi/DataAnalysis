@@ -29,22 +29,22 @@ def get_one_year_alpha():
     df_alto = df_alto.drop(columns=['alpha_usd'])
     df_alto = df_alto.drop(columns=['not_usd'])
     df_alto = df_alto.drop(columns=['quantity'])
-    # remove index
 
     df_result = pd.DataFrame()
-
     # get unique ticker from df_alto
     tickers = df_alto['ticker'].unique()
-    tickers = ['DG US']
+    # tickers = ['GRF SM']
+
     for ticker in tickers:
         df_ticker = df_alto.loc[df_alto['ticker'] == ticker]
         df_ticker = df_notional.join(df_ticker)
         df_ticker['ticker'] = ticker
         df_ticker['alpha_bp'] = df_ticker['alpha_bp'].fillna(0)
-        # roll 250 days
-        df_ticker['alpha_bp_1yr'] = df_ticker['alpha_bp'].rolling(260, min_periods=1).sum()
-        # keep only when alpha_bp_1yr>100
-        df_ticker = df_ticker[df_ticker['alpha_bp_1yr'] < -100]
+        df_ticker['alpha_bp_cum'] = df_ticker['alpha_bp'].cumsum()
+        df_ticker['max_alpha_bp_cum'] = df_ticker['alpha_bp_cum'].rolling(window=520, min_periods=1).max()
+        df_ticker['draw_down'] = df_ticker['alpha_bp_cum'] - df_ticker['max_alpha_bp_cum']
+
+        df_ticker = df_ticker[df_ticker['draw_down'] < -200]
 
         if df_ticker is not None:
             df_result = pd.concat([df_result, df_ticker])

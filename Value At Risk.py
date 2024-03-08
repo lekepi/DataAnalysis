@@ -3,7 +3,7 @@ from models import engine
 
 
 def get_var():
-    my_sql = """SELECT entry_date,data_daily as alto FROM nav_account_statement WHERE status='Daily' and 
+    my_sql = """SELECT entry_date,data_daily/100 as alto FROM nav_account_statement WHERE status='Daily' and 
     entry_date>='2019-04-01' and data_name='RETURN USD CLASS L' and active=1 order by entry_date;"""
     df_alto = pd.read_sql(my_sql, con=engine, parse_dates=['entry_date'], index_col='entry_date')
 
@@ -16,7 +16,12 @@ def get_var():
     df_sxxp = pd.read_sql(my_sql, con=engine, parse_dates=['entry_date'], index_col='entry_date')
 
     df = pd.concat([df_alto, df_spx, df_sxxp], axis=1)
-    pass
+    # fill with 0
+    df = df.fillna(0)
+    # convert index into date, not datetime
+    df.index = df.index.date
+    # save into excel
+    df.to_excel(r'excel\Value At Risk.xlsx', index=True)
 
 
 if __name__ == '__main__':

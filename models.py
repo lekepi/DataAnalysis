@@ -414,6 +414,15 @@ class Position(Base):
     qty_ubs = Column(Float)
 
 
+class FundFee(Base):
+    __tablename__ = 'fund_fee'
+    id = Column(Integer, primary_key=True)
+    entry_date = Column(Date, nullable=False)
+    class_type = Column(String(length=10))
+    fee_type = Column(String(length=45))
+    value = Column(Float)
+
+
 class TradingGs(Base):
     __tablename__ = 'trading_gs'
     id = Column(Integer, primary_key=True)
