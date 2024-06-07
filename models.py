@@ -26,6 +26,8 @@ class Aum(Base):
     entry_date = Column(Date)
     amount = Column(Float)
     type = Column(String(45))
+    fund_id = Column(ForeignKey("fund.id"))
+    fund = relationship("Fund")
 
 
 class Trade(Base):

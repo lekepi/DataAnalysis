@@ -6,7 +6,7 @@ def get_position_size():
 
     core_position = 20
 
-    my_sql = "SELECT entry_date,amount*1000000 as aum FROM aum WHERE type='leveraged' and entry_date>='2019-04-01' order by entry_date;"
+    my_sql = "SELECT entry_date,amount*1000000 as aum FROM aum WHERE type='leveraged' and fund_id=4 and entry_date>='2019-04-01' order by entry_date;"
     df_aum = pd.read_sql(my_sql, con=engine, parse_dates=['entry_date'])
 
     my_sql = """SELECT entry_date,T2.ticker,mkt_value_usd FROM position T1 JOIN product T2 on T1.product_id=T2.id WHERE prod_type='Cash' and parent_fund_id=1

@@ -33,7 +33,7 @@ def get_eom_weekday_list():
 def get_historic_exposure_summary():
     date_list = get_eom_weekday_list()
 
-    aum_list = session.query(Aum).filter(Aum.type == 'leveraged').all()
+    aum_list = session.query(Aum).filter(Aum.type == 'leveraged').filter(Aum.fund_id == 4).all()
     exposure_list = []
     country_list = []
     sector_list = []

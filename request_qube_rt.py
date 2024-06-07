@@ -41,7 +41,7 @@ group by entry_date,side,prod_type"""
         'GrossPnL_single_short': agg_pnl_single_short
     }).reset_index()
 
-    my_sql = "SELECT entry_date,round(amount,1)*1000000 as aum from AUM WHERE type='leveraged' order by entry_date"
+    my_sql = "SELECT entry_date,round(amount,1)*1000000 as aum from AUM WHERE type='leveraged' and fund_id=4 order by entry_date"
     df_aum = pd.read_sql(my_sql, con=engine, parse_dates=['entry_date'])
 
     # merge on entry_date
@@ -106,7 +106,7 @@ def get_start_month_position():
                 order by entry_date,mkt_value_usd desc;"""
     df = pd.read_sql(my_sql, con=engine)
 
-    my_sql = """SELECT entry_date,amount*1000000 as nav_usd FROM aum WHERE type='leveraged' and 
+    my_sql = """SELECT entry_date,amount*1000000 as nav_usd FROM aum WHERE type='leveraged' and fund_id=4 and 
                 entry_date>='2020-03-01' and entry_date<'2023-05-01';"""
     df_aum = pd.read_sql(my_sql, con=engine)
     # merge on entry_date
