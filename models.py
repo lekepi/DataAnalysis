@@ -20,6 +20,36 @@ Session.configure(bind=engine)
 session = Session()
 
 
+class AlphaUniverse(Base):
+    __tablename__ = 'alpha_universe'
+    id = Column(Integer, primary_key=True)
+    entry_date = Column(Date)
+    alpha_raw = Column(Float)
+    alpha_amer = Column(Float)
+    alpha_emea = Column(Float)
+    alpha = Column(Float)
+    alpha_raw_0 = Column(Float)
+    alpha_amer_0 = Column(Float)
+    alpha_emea_0 = Column(Float)
+    alpha_0 = Column(Float)
+    alpha_raw_m = Column(Float)
+    alpha_amer_m = Column(Float)
+    alpha_emea_m = Column(Float)
+    alpha_m = Column(Float)
+    alpha_raw_m_0 = Column(Float)
+    alpha_amer_m_0 = Column(Float)
+    alpha_emea_m_0 = Column(Float)
+    alpha_m_0 = Column(Float)
+    alpha_raw_y = Column(Float)
+    alpha_amer_y = Column(Float)
+    alpha_emea_y = Column(Float)
+    alpha_y = Column(Float)
+    alpha_raw_y_0 = Column(Float)
+    alpha_amer_y_0 = Column(Float)
+    alpha_emea_y_0 = Column(Float)
+    alpha_y_0 = Column(Float)
+
+
 class Aum(Base):
     __tablename__ = 'aum'
     id = Column(Integer, primary_key=True)

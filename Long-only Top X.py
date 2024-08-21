@@ -18,11 +18,15 @@ def get_top_position(position_count, fee_rate):
     and T1.parent_fund_id=1 and entry_date>='2019-04-01' and entry_date<='{end_date}' group by T1.entry_date
     Order by T1.entry_date;"""
     df = pd.read_sql(my_sql, con=engine, parse_dates=['entry_date'], index_col='entry_date')
+    df['top1_usd'] = 0
+    df['last1_usd'] = 0
     df['top_usd'] = 0
     df['alpha_usd'] = 0
     df['pnl_usd'] = 0
 
     for index, row in df.iterrows():
+        df.loc[index, 'top1_usd'] += df_top_pos.loc[index][:1]['mkt_value_usd'].sum()
+        df.loc[index, 'last1_usd'] += df_top_pos.loc[index][19:20]['mkt_value_usd'].sum()
         df.loc[index, 'top_usd'] += df_top_pos.loc[index][:position_count]['mkt_value_usd'].sum()
         df.loc[index, 'alpha_usd'] += df_top_pos.loc[index][:position_count]['alpha_usd'].sum()
         df.loc[index, 'pnl_usd'] += df_top_pos.loc[index][:position_count]['pnl_usd'].sum()

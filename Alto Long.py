@@ -2,6 +2,7 @@ import pandas as pd
 from models import engine, session, NavAccountStatement
 from utils import last_alpha_date
 
+
 def get_alpha_long(region):
     # Long notional
     if region == 'Europe':
