@@ -48,6 +48,17 @@ def last_alpha_date():
     return end_date
 
 
+def get_weekly_dates(start_date, end_date, week_number):
+    date_list = []
+    current_date = start_date
+
+    while current_date <= end_date:
+        date_list.append(current_date)
+        current_date += timedelta(weeks=week_number)
+
+    return date_list
+
+
 def simple_email(subject, body, ml, html=None):
 
     mail = config_class.MAIL_USERNAME

@@ -2,7 +2,6 @@ import pandas as pd
 from models import engine
 
 
-
 if __name__ == '__main__':
 
     my_sql = f"""SELECT T1.entry_date,sum(T1.mkt_value_usd) as notional_usd FROM position T1

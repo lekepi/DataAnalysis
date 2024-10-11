@@ -33,4 +33,9 @@ if __name__ == '__main__':
     # keep only the first 20 lines
     df_sum = df_sum.head(20)
 
+    my_sql = "Select ticker,name from product"
+    df_name = pd.read_sql(my_sql, con=engine)
+    df_sum = pd.merge(df_sum, df_name, on=['ticker'], how='left')
+    df_sum.to_excel(r'Excel\average_large_position.xlsx', index=True)
+
     print(1)

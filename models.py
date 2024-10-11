@@ -470,6 +470,17 @@ class TradingGs(Base):
     arrival = Column(Float)
 
 
+class LiquidityStress(Base):
+    __tablename__ = 'liquidity_stress'
+    id = Column(Integer, primary_key=True)
+    entry_date = Column(Date, nullable=False)
+    parent_fund_id = Column(ForeignKey("parent_fund.id"), nullable=False)
+    parent_fund = relationship("ParentFund")
+    adv = Column(Integer, nullable=False)
+    days = Column(Integer, nullable=False)
+    value = Column(Float, nullable=False)
+
+
 class ProductGroup(Base):
     __tablename__ = 'product_group'
     id = Column(Integer, primary_key=True)

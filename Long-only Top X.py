@@ -2,6 +2,8 @@ import pandas as pd
 from models import engine
 from utils import last_alpha_date
 from datetime import date
+import openpyxl
+
 
 def get_top_position(position_count, fee_rate):
 
@@ -53,11 +55,11 @@ def get_top_position(position_count, fee_rate):
     for month_year in month_year_list:
         df_monthly_perf.loc[month_year, 'pnl_bp'] = (1 + df[df['month_year'] == month_year]['pnl_bp_fee']).prod() - 1
 
-    with pd.ExcelWriter(rf'Excel\top_position {position_count}.xlsx', mode='a') as writer:
+    with pd.ExcelWriter(rf'Excel\top_position {position_count}.xlsx', mode='a', engine='openpyxl') as writer:
         df_monthly_perf.to_excel(writer, sheet_name='Monthly Perf', index=True)
 
     # create summary sheet in excel
-    with pd.ExcelWriter(rf'Excel\top_position {position_count}.xlsx', mode='a') as writer:
+    with pd.ExcelWriter(rf'Excel\top_position {position_count}.xlsx', mode='a', engine='openpyxl') as writer:
         df_summary = pd.DataFrame(data={'Total Perf': [total_perf], 'Annualized Perf': [annualized_perf]})
         df_summary.to_excel(writer, sheet_name='Summary', index=False)
 
@@ -93,7 +95,7 @@ def get_top_position(position_count, fee_rate):
     # turn into df
     df_name_turnover = pd.DataFrame(my_dict)
     # write to excel
-    with pd.ExcelWriter(rf'Excel\top_position {position_count}.xlsx', mode='a') as writer:
+    with pd.ExcelWriter(rf'Excel\top_position {position_count}.xlsx', mode='a', engine='openpyxl') as writer:
         df_name_turnover.to_excel(writer, sheet_name='Name Turnover', index=True)
 
     # remove column that contains '-06-'
@@ -111,12 +113,12 @@ def get_top_position(position_count, fee_rate):
         old_list = df_name_year[col].tolist()
 
     df_name_turnover_perc = pd.DataFrame(dict_to_perc, index=[0])
-    with pd.ExcelWriter(rf'Excel\top_position {position_count}.xlsx', mode='a') as writer:
+    with pd.ExcelWriter(rf'Excel\top_position {position_count}.xlsx', mode='a', engine='openpyxl') as writer:
         df_name_turnover_perc.to_excel(writer, sheet_name='Name Turnover Perc', index=False)
 
 
 if __name__ == '__main__':
 
     stock_number = 20
-    fee_perc = 0  #0.3
+    fee_perc = 0  # 0.3
     get_top_position(stock_number, fee_perc)
