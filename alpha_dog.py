@@ -148,8 +148,8 @@ def get_perf_dog(start_date, end_date, region, dog_number, reduction_perc, rolli
 
     excel_name = f"{start_date}_{region}_{dog_number}_{reduction_perc}_{rolling_alpha_period}_{rebalancing_frequency}_{reset_period}.xlsx"
     # save in excel folder
-    df_result.to_excel(f"excel/perf_dog_{excel_name}", index=False)
-    df_reduction.to_excel(f"excel/reduction_perf_{excel_name}", index=False)
+    df_result.to_excel(f"excel/Alpha Dog/perf_dog_{excel_name}", index=False)
+    df_reduction.to_excel(f"excel/Alpha Dog/reduction_perf_{excel_name}", index=False)
 
 
 def get_alpha_dog(start_date, end_date, region, dog_number, reduction_perc, rolling_alpha_period, rebalancing_frequency,
@@ -303,8 +303,8 @@ def get_alpha_dog(start_date, end_date, region, dog_number, reduction_perc, roll
 
     excel_name = f"{start_date}_{region}_{dog_number}_{reduction_perc}_{rolling_alpha_period}_{rebalancing_frequency}_{reset_period}_{reduction_method}.xlsx"
     # save in excel folder
-    df_result.to_excel(f"excel/alpha_dog_{excel_name}", index=False)
-    df_reduction.to_excel(f"excel/reduction_{excel_name}", index=False)
+    df_result.to_excel(f"excel/Alpha Dog/alpha_dog_{excel_name}", index=False)
+    df_reduction.to_excel(f"excel/Alpha Dog/reduction_{excel_name}", index=False)
 
 
 if __name__ == '__main__':

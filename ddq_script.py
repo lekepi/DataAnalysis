@@ -176,7 +176,7 @@ def get_turnover_capital():
     df_trade = df_trade.groupby('trade_date')['trade_usd'].sum().reset_index()
     df_trade = df_trade.rename(columns={'trade_date': 'entry_date'})
 
-    my_sql = """SELECT entry_date, sum(abs(mkt_value_usd)) as gross_usd FROM position T1 GROUP BY entry_date;"""
+    my_sql = """SELECT entry_date, sum(abs(mkt_value_usd)) as gross_usd FROM position T1 WHERE T1.parent_fund_id=1 GROUP BY entry_date;"""
     df_gross = pd.read_sql(my_sql, con=engine, parse_dates=['entry_date'])
     # merge df_trade and df_gross
     df = pd.merge(df_trade, df_gross, on='entry_date', how='left')

@@ -470,6 +470,12 @@ class TradingGs(Base):
     arrival = Column(Float)
 
 
+class ProductStrategy(Base):
+    __tablename__ = 'product_strategy'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(45))
+
+
 class LiquidityStress(Base):
     __tablename__ = 'liquidity_stress'
     id = Column(Integer, primary_key=True)

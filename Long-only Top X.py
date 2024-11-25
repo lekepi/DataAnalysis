@@ -12,6 +12,7 @@ def get_top_position(position_count, fee_rate):
     # top_position
     my_sql = f"""SELECT entry_date,T2.ticker,mkt_value_usd,alpha_usd,pnl_usd FROM position T1 JOIN product T2 on T1.product_id=T2.id 
     WHERE T1.parent_fund_id=1 and entry_date>='2019-04-01' and entry_date<='{end_date}' and quantity>0  and prod_type='Cash' order by entry_date,mkt_value_usd desc;"""
+    # and T2.ticker not in ('AGI US', 'FNV US','FNV CN','NEM US','GOLD US','AEM US','GDX US','GC1 CMX','GLD US')
 
     df_top_pos = pd.read_sql(my_sql, con=engine, parse_dates=['entry_date'], index_col='entry_date')
 
@@ -119,6 +120,6 @@ def get_top_position(position_count, fee_rate):
 
 if __name__ == '__main__':
 
-    stock_number = 20
+    stock_number = 200
     fee_perc = 0  # 0.3
     get_top_position(stock_number, fee_perc)
