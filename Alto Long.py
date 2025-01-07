@@ -84,7 +84,6 @@ and quantity<>0 and T1.parent_fund_id=1 {sql_extra} GROUP BY trade_date;"""
     df_sector = df_sector.div(df_sector.sum(axis=1), axis=0)
     # fill NaN with 0
     df_sector = df_sector.fillna(0)
-
     # save excel
     df_sector.to_excel(f'H:/Python Output/Alto Long Sector {region}.xlsx')
     pass

@@ -199,7 +199,7 @@ def get_turnover_capital():
     df_year = df_year.drop(columns=['turnover_adj'])
     # remove current year
     current_year = date.today().year
-    df_year = df_year[df_year['year'] != current_year]
+    # df_year = df_year[df_year['year'] != current_year]
 
     # round to 2 decimals
     df_year['turnover'] = df_year['turnover'].apply(lambda x: round(x, 2))

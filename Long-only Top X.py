@@ -5,9 +5,7 @@ from datetime import date
 import openpyxl
 
 
-def get_top_position(position_count, fee_rate):
-
-    end_date = last_alpha_date()
+def get_top_position(position_count, fee_rate, end_date):
 
     # top_position
     my_sql = f"""SELECT entry_date,T2.ticker,mkt_value_usd,alpha_usd,pnl_usd FROM position T1 JOIN product T2 on T1.product_id=T2.id 
@@ -120,6 +118,7 @@ def get_top_position(position_count, fee_rate):
 
 if __name__ == '__main__':
 
-    stock_number = 200
+    stock_number = 20
     fee_perc = 0  # 0.3
-    get_top_position(stock_number, fee_perc)
+    last_date = date(2024, 12, 31)
+    get_top_position(stock_number, fee_perc, last_date)
