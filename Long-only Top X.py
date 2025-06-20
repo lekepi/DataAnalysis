@@ -76,49 +76,50 @@ def get_top_position(position_count, fee_rate, end_date):
             last_date = df.index[df.index.year == year].max()
             date_list.append(last_date)
 
-    my_dict = {}
+    if position_count == 20:
+        my_dict = {}
 
-    for my_date in date_list:
-        # get df_top_pos for index = my_date top 20 rows
-        df_top_pos_date = df_top_pos[df_top_pos.index == my_date][:position_count]
-        # keep ticker only
-        df_top_pos_date = df_top_pos_date['ticker']
-        # sort alphabetically
-        df_top_pos_date = df_top_pos_date.sort_values()
-        my_date_str = my_date.strftime('%Y-%m-%d')
-        # get list
-        df_top_pos_date = df_top_pos_date.tolist()
-        # put it in df_name_turnover with index = with column name = my_date
-        my_dict[my_date_str] = df_top_pos_date
+        for my_date in date_list:
+            # get df_top_pos for index = my_date top 20 rows
+            df_top_pos_date = df_top_pos[df_top_pos.index == my_date][:position_count]
+            # keep ticker only
+            df_top_pos_date = df_top_pos_date['ticker']
+            # sort alphabetically
+            df_top_pos_date = df_top_pos_date.sort_values()
+            my_date_str = my_date.strftime('%Y-%m-%d')
+            # get list
+            df_top_pos_date = df_top_pos_date.tolist()
+            # put it in df_name_turnover with index = with column name = my_date
+            my_dict[my_date_str] = df_top_pos_date
 
-    # turn into df
-    df_name_turnover = pd.DataFrame(my_dict)
-    # write to excel
-    with pd.ExcelWriter(rf'Excel\top_position {position_count}.xlsx', mode='a', engine='openpyxl') as writer:
-        df_name_turnover.to_excel(writer, sheet_name='Name Turnover', index=True)
+        # turn into df
+        df_name_turnover = pd.DataFrame(my_dict)
+        # write to excel
+        with pd.ExcelWriter(rf'Excel\top_position {position_count}.xlsx', mode='a', engine='openpyxl') as writer:
+            df_name_turnover.to_excel(writer, sheet_name='Name Turnover', index=True)
 
-    # remove column that contains '-06-'
-    df_name_year = df_name_turnover.loc[:, ~df_name_turnover.columns.str.contains('-06-')]
+        # remove column that contains '-06-'
+        df_name_year = df_name_turnover.loc[:, ~df_name_turnover.columns.str.contains('-06-')]
 
-    dict_to_perc = {}
+        dict_to_perc = {}
 
-    for col in df_name_year.columns:
-        # if first col
-        if col != df_name_year.columns[0]:
-            new_list = df_name_year[col].tolist()
-            # get diff
-            diff_list = list(set(new_list) - set(old_list))
-            dict_to_perc[col] = len(diff_list) / len(old_list)
-        old_list = df_name_year[col].tolist()
+        for col in df_name_year.columns:
+            # if first col
+            if col != df_name_year.columns[0]:
+                new_list = df_name_year[col].tolist()
+                # get diff
+                diff_list = list(set(new_list) - set(old_list))
+                dict_to_perc[col] = len(diff_list) / len(old_list)
+            old_list = df_name_year[col].tolist()
 
-    df_name_turnover_perc = pd.DataFrame(dict_to_perc, index=[0])
-    with pd.ExcelWriter(rf'Excel\top_position {position_count}.xlsx', mode='a', engine='openpyxl') as writer:
-        df_name_turnover_perc.to_excel(writer, sheet_name='Name Turnover Perc', index=False)
+        df_name_turnover_perc = pd.DataFrame(dict_to_perc, index=[0])
+        with pd.ExcelWriter(rf'Excel\top_position {position_count}.xlsx', mode='a', engine='openpyxl') as writer:
+            df_name_turnover_perc.to_excel(writer, sheet_name='Name Turnover Perc', index=False)
 
 
 if __name__ == '__main__':
 
-    stock_number = 20
+    stock_number = 200
     fee_perc = 0  # 0.3
-    last_date = date(2024, 12, 31)
+    last_date = date(2025, 5, 31)
     get_top_position(stock_number, fee_perc, last_date)

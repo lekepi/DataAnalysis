@@ -1,3 +1,5 @@
+import sys
+
 import pandas as pd
 from models import engine, LiquidityStress, session
 from sqlalchemy import func
@@ -214,7 +216,7 @@ def get_turnover_capital():
     return df_turnover_capital
 
 
-def get_turnover_name(name_number):
+def get_turnover_name(name_number, direction='Long'):
 
     first_date = date(2019, 4, 1)
     current_year = date.today().year
@@ -228,10 +230,16 @@ def get_turnover_name(name_number):
     df_result = pd.DataFrame(columns=['year', 'turnover'])
 
     df_old = pd.DataFrame()
+
+    if direction == 'Long':
+        mkt_value_sql = " and mkt_value_usd>0 "
+    else:
+        mkt_value_sql = " and mkt_value_usd<0 "
+
     for index, my_date in enumerate(date_list):
-        my_sql = f"""SELECT T2.ticker,mkt_value_usd FROM position T1 JOIN product T2 on T1.product_id=T2.id 
-        WHERE parent_fund_id=1 and T2.prod_type='Cash' and entry_date='{my_date}' and mkt_value_usd>0 
-        order by mkt_value_usd desc;"""
+        my_sql = f"""SELECT T2.ticker,abs(mkt_value_usd) as mkt_value_usd FROM position T1 JOIN product T2 on T1.product_id=T2.id 
+        WHERE parent_fund_id=1 and T2.prod_type='Cash' and entry_date='{my_date}' {mkt_value_sql}
+        order by abs(mkt_value_usd) desc;"""
         df_new = pd.read_sql(my_sql, con=engine)
 
         if not df_old.empty:
@@ -312,6 +320,10 @@ def get_stress_test():
 
 
 if __name__ == '__main__':
+
+    # get_turnover_name(30, 'Short')
+    # sys.exit()
+
     today = date.today()
     file_path = 'Excel/DDQ Output.xlsx'
 
