@@ -470,6 +470,15 @@ class TradingGs(Base):
     arrival = Column(Float)
 
 
+class TempAltoAlphaMixBm(Base):
+    __tablename__ = 'temp_alto_alpha_mix_bm'
+    id = Column(Integer, primary_key=True)
+    entry_date = Column(Date, nullable=False)
+    long_usd = Column(Float)
+    alpha_usd = Column(Float)
+    alpha = Column(Float)
+
+
 class ProductStrategy(Base):
     __tablename__ = 'product_strategy'
     id = Column(Integer, primary_key=True)
