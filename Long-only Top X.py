@@ -121,5 +121,5 @@ if __name__ == '__main__':
 
     stock_number = 200
     fee_perc = 0  # 0.3
-    last_date = date(2025, 5, 31)
+    last_date = date(2025, 12, 31)
     get_top_position(stock_number, fee_perc, last_date)
